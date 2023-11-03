@@ -33,10 +33,16 @@ namespace TodoList.Services
             return await _dbContext.Items.ToListAsync();
         }
 
-        public async Task<List<TodoItem>> GetAllTodoItems()
+        public async Task<List<TodoItem>> GetAllTodoItems(int page = 1)
         {
+            int pageSize = 3;
             var items = await _dbContext.Items.ToListAsync();
-            return items;
+            var itemsPerPage = items
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();         
+
+            return itemsPerPage;
         }
 
         public async Task<TodoItem> GetSingleTodoItem(int id)

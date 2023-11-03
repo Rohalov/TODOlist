@@ -1,11 +1,19 @@
 ﻿global using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using TodoList.Models.Entities;
+using TodoList.Provider;
 
 namespace TodoList.Data
 {
     public class ApplicationDbContext : DbContext
     {
         public DbSet<TodoItem> Items { get; set; }
+
+        public DbSet<ApplicationUser> Users { get; set; }
+
+        public DbSet<ApplicationRole> Roles { get; set; }
+
+        public DbSet<IdentityUserRole<int>> UserRoles { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) { }
 

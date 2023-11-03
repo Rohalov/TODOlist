@@ -26,9 +26,9 @@ namespace TodoList.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<TodoItem>>> GetAllTodoItems()
-        {
-            var items = await _todoItemService.GetAllTodoItems();
+        public async Task<ActionResult<List<TodoItem>>> GetAllTodoItems(int page)
+        {   
+            var items = await _todoItemService.GetAllTodoItems(page);
             return Ok(_mapper.Map<List<TodoItemDto>>(items));
         }
 
