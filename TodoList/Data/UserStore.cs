@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TodoList.Models.Entities;
 
-namespace TodoList.Provider
+namespace TodoList.Data
 {
     public class UserStore : IUserStore<ApplicationUser>, IUserRoleStore<ApplicationUser>
     {
@@ -70,7 +71,7 @@ namespace TodoList.Provider
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            return await Task.FromResult(user.UserName);
+            return await Task.FromResult(user.NormalizedUserName);
         }
 
         public async Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -133,10 +134,14 @@ namespace TodoList.Provider
             await userTable.RemoveFromRoleAsync(user, roleName);
         }
 
-        public Task SetNormalizedUserNameAsync(ApplicationUser user, string? normalizedName, CancellationToken cancellationToken)
+        public async Task SetNormalizedUserNameAsync(ApplicationUser user, string? normalizedName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult<object>(null);
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            await  userTable.SetNormalizedUserNameAsync(user, normalizedName);
         }
 
         public async Task<object> SetUserNameAsync(ApplicationUser user, string? userName, CancellationToken cancellationToken)

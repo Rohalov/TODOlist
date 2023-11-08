@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TodoList.Data;
 
-namespace TodoList.Provider
+namespace TodoList.Data
 {
-    public class RoleTable
+    public class RoleTable : IDisposable
     {
         private readonly ApplicationDbContext _context;
 
@@ -16,6 +15,7 @@ namespace TodoList.Provider
         {
             _context.Roles.Add(role);
             await _context.SaveChangesAsync();
+            await SetNormalizedRoleNameAsync(role, role.Name.ToUpper());
             return IdentityResult.Success;
         }
 
@@ -26,9 +26,9 @@ namespace TodoList.Provider
             return IdentityResult.Success;
         }
 
-        public void Dispose() 
+        public async void Dispose() 
         {
-            this.Dispose();
+            await _context.DisposeAsync();
         }
 
         public async Task<ApplicationRole?> FindByIdAsync(string roleId)
@@ -37,9 +37,14 @@ namespace TodoList.Provider
             return role;
         }
 
+        public async Task<string?> GetNormalizedRoleNameAsync(ApplicationRole role)
+        {
+            return await Task.FromResult(role.NormalizedName);
+        }
+
         public async Task<ApplicationRole?> FindByNameAsync(string normalizedRoleName)
         {
-            var role = await _context.Roles.FindAsync(normalizedRoleName);
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == normalizedRoleName);
             return role;
         }
 
@@ -53,10 +58,24 @@ namespace TodoList.Provider
             return await Task.FromResult(role.Name);
         }
 
-        public async Task<object> SetRoleNameAsync(ApplicationRole role, string roleName)
+        public async Task SetNormalizedRoleNameAsync(ApplicationRole role, string? normalizedName)
         {
-            role.Name = roleName;
-            return await Task.FromResult<object>(null);
+            var roleDB = await _context.Roles.FirstOrDefaultAsync(r => r.Name == role.Name);
+            if (roleDB != null)
+            {
+                roleDB.NormalizedName = normalizedName;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SetRoleNameAsync(ApplicationRole role, string roleName)
+        {
+            var roleDB = await FindByNameAsync(role.NormalizedName);
+            if (roleDB != null)
+            {
+                roleDB.Name = roleName;
+                await _context.SaveChangesAsync();
+            }            
         }
 
         public async Task<IdentityResult> UpdateAsync(ApplicationRole role)

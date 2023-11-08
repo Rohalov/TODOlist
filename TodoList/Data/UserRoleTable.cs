@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TodoList.Data;
+using TodoList.Models.Entities;
 
-namespace TodoList.Provider
+namespace TodoList.Data
 {
     public class UserRoleTable
     {
@@ -40,12 +40,12 @@ namespace TodoList.Provider
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> AddUserRoleAsync(ApplicationUser user, ApplicationRole role)
+        public async Task<IdentityResult> AddUserRoleAsync(ApplicationUser user, int roleId)
         {
             var userRole = new IdentityUserRole<int>
             {
                 UserId = user.Id,
-                RoleId = role.Id
+                RoleId = roleId
             };
             context.UserRoles.Add(userRole);
             await context.SaveChangesAsync();

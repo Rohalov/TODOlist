@@ -25,6 +25,7 @@ namespace TodoList.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "RequireUserRole")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<TodoItem>>> GetAllTodoItems(int page)
         {   
@@ -33,6 +34,7 @@ namespace TodoList.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "RequireUserRole")]
         [ProducesResponseType(typeof(TodoItem), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<TodoItem>>> GetSingleTodoItem(int id)
@@ -47,6 +49,7 @@ namespace TodoList.Controllers
         } 
 
         [HttpPost]
+        [Authorize(Policy = "RequireUserRole")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<List<TodoItem>>> AddTodoItem(TodoItemDto newItem)
         {
@@ -56,6 +59,7 @@ namespace TodoList.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "RequireUserRole")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<TodoItem>>> DeleteTodoItem(int id)

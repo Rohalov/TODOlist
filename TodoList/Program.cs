@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using TodoList.Data;
-using TodoList.Provider;
+using TodoList.Models.Entities;
 using TodoList.Services;
 
 internal class Program
@@ -25,8 +24,6 @@ internal class Program
 
         builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o => o.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddUserStore<UserStore>()
-            .AddRoleStore<RoleStore>()
             .AddDefaultTokenProviders();
 
         builder.Services.AddTransient<IUserStore<ApplicationUser>, UserStore>();

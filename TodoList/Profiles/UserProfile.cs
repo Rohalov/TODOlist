@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using TodoList.Models.DTO;
+using TodoList.Models.Entities;
 
-namespace TodoList.Provider
+namespace TodoList.Profiles
 {
     public class UserProfile : Profile
     {
-        protected UserProfile()
+        public UserProfile()
         {
             CreateMap<ApplicationUser, UserDTO>();
             CreateMap<UserDTO, ApplicationUser>();

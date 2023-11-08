@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TodoList.Models.Entities;
 
-
-namespace TodoList.Provider
-{
+namespace TodoList.Data
+{ 
     public class RoleStore : IRoleStore<ApplicationRole>
     {
         private readonly RoleTable roleTable;
@@ -19,7 +19,6 @@ namespace TodoList.Provider
             {
                 throw new ArgumentNullException(nameof(role));
             }
-
             return await roleTable.CreateAsync(role);
         }
 
@@ -30,7 +29,6 @@ namespace TodoList.Provider
             {
                 throw new ArgumentNullException(nameof(role));
             }
-
             return await roleTable.DeleteAsync(role);
         }
 
@@ -59,35 +57,47 @@ namespace TodoList.Provider
             {
                 throw new ArgumentNullException(nameof(role));
             }
-            return await Task.FromResult(role.Name);
+            return await roleTable.GetNormalizedRoleNameAsync(role);
         }
 
         public async Task<string> GetRoleIdAsync(ApplicationRole role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return await roleTable.GetRoleIdAsync(role);
-        }
-
-        public async Task<string?> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return await roleTable.GetRoleNameAsync(role);
-        }
-
-        public Task SetNormalizedRoleNameAsync(ApplicationRole role, string? normalizedName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult<object>(null);
-        }
-
-        public async Task<object> SetRoleNameAsync(ApplicationRole role, string? roleName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
             {
                 throw new ArgumentNullException(nameof(role));
             }
-            return await roleTable.SetRoleNameAsync(role, roleName);
+            return await roleTable.GetRoleIdAsync(role);
+        }
+
+        public async Task<string?> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+            return await roleTable.GetRoleNameAsync(role);
+        }
+
+        public async Task SetNormalizedRoleNameAsync(ApplicationRole role, string? normalizedName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+            await roleTable.SetNormalizedRoleNameAsync(role, normalizedName);
+        }
+
+        public async Task SetRoleNameAsync(ApplicationRole role, string? roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+            await roleTable.SetRoleNameAsync(role, roleName);
         }
 
         public async Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)

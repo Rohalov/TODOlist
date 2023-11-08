@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TodoList.Provider;
+using TodoList.Models.Entities;
 
 namespace TodoList.Data
 {
@@ -21,7 +21,8 @@ namespace TodoList.Data
             builder
                 .Property(x => x.Name)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired()
+                .IsUnicode();
 
             builder
                 .HasMany<IdentityUserRole<int>>()

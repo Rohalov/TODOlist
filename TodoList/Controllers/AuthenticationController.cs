@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoList.Models.DTO;
+using TodoList.Models.Entities;
+using TodoList.Services;
 
-namespace TodoList.Provider
+namespace TodoList.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +33,7 @@ namespace TodoList.Provider
             var user = await _authenticationService.Register(newUser);
             if (user == null)
             {
-                return BadRequest();
+                return BadRequest("User with that name already exists");
             }
             return Created($"~api/users/{user.Id}", user);
         }

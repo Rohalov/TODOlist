@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using TodoList.Models.Entities;
 
-namespace TodoList.Provider
+namespace TodoList.Services
 {
     public interface IAuthenticationService
     {

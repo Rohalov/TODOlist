@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Globalization;
-using TodoList.Data;
+using TodoList.Models.Entities;
 
-namespace TodoList.Provider
+namespace TodoList.Data
 {
-    public class UserTable
+    public class UserTable : IDisposable
     {
         private readonly ApplicationDbContext _context;
 
@@ -17,6 +17,7 @@ namespace TodoList.Provider
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+            await SetNormalizedUserNameAsync(user, user.UserName.ToUpper());
             return IdentityResult.Success;
         }
 
@@ -27,20 +28,20 @@ namespace TodoList.Provider
             return IdentityResult.Success;
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            this.Dispose();
+            await _context.DisposeAsync();
         }
 
         public async Task<ApplicationUser?> FindByIdAsync(string userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(int.Parse(userId));
             return user;
         }
 
         public async Task<ApplicationUser?> FindByNameAsync(string normalizedUserName)
         {
-            var user = await _context.Users.FindAsync(normalizedUserName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName);
             return user;
         }
 
@@ -51,12 +52,12 @@ namespace TodoList.Provider
 
         public async Task<string?> GetUserNameAsync(ApplicationUser user)
         {
-            return await Task.FromResult(user.UserName);
+            var userName = user.UserName;
+            return await Task.FromResult(userName);
         }
 
         public async Task<object> SetUserNameAsync(ApplicationUser user, string userName)
         {
-            user.UserName = userName;
             return await Task.FromResult<object>(null);
         }
         public async Task<IdentityResult> UpdateAsync(ApplicationUser user)
@@ -73,7 +74,7 @@ namespace TodoList.Provider
 
         public async Task AddToRoleAsync(ApplicationUser user, string roleName)
         {
-            var roleEntity = await _context.Roles.FindAsync(roleName);
+            var roleEntity = await _context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == roleName);
             if (roleEntity == null)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
@@ -103,7 +104,7 @@ namespace TodoList.Provider
 
         public async Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName)
         {
-            var role = await _context.Roles.FindAsync(roleName);
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == roleName);
             var users = await _context.Users.Join(_context.Roles,
                 user => user.Id,
                 role => role.Id,
@@ -118,7 +119,7 @@ namespace TodoList.Provider
 
         public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName)
         {
-            var role = await _context.Roles.FindAsync(roleName);
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == roleName);
             if (role != null)
             {
                 var userId = user.Id;
@@ -130,10 +131,21 @@ namespace TodoList.Provider
 
         public async Task RemoveFromRoleAsync(ApplicationUser user, string roleName)
         {
-            var role = await _context.Roles.FindAsync(roleName);
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == roleName);
             var userRole = await _context.UserRoles.SingleOrDefaultAsync(r =>
                 r.RoleId == role.Id && r.UserId == user.Id);
             _context.UserRoles.Remove(userRole);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SetNormalizedUserNameAsync(ApplicationUser user, string? normalizedName)
+        {
+            var userDB = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
+            if (userDB != null)
+            {
+                userDB.NormalizedUserName = normalizedName;
+                _context.Update(userDB);
+            }
             await _context.SaveChangesAsync();
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TodoList.Models.Entities;
-using TodoList.Provider;
 
 namespace TodoList.Data
 {

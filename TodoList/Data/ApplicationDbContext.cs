@@ -1,7 +1,6 @@
 ﻿global using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using TodoList.Models.Entities;
-using TodoList.Provider;
 
 namespace TodoList.Data
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TodoList.Models.Entities;
 
-
-namespace TodoList.Provider
+namespace TodoList.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -14,7 +14,7 @@ namespace TodoList.Provider
 
         public async Task<ApplicationUser> Register(ApplicationUser user)
         {
-            var userInDB = _userManager.FindByNameAsync(user.UserName);
+            var userInDB = await _userManager.FindByNameAsync(user.UserName);
             if (userInDB != null) 
             {
                 return null;

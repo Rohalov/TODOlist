@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TodoList.Provider;
+using TodoList.Models.Entities;
 
 namespace TodoList.Data
 {
@@ -20,7 +20,8 @@ namespace TodoList.Data
             builder
                 .Property(x => x.UserName)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired()
+                .IsUnicode();
 
             builder
                 .HasMany<ApplicationRole>()
