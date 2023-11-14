@@ -22,12 +22,6 @@ namespace TodoList.Data
                 .HasMaxLength(50)
                 .IsRequired()
                 .IsUnicode();
-
-            builder
-                .HasMany<ApplicationRole>()
-                .WithOne()
-                .HasForeignKey(ur => ur.Id)
-                .IsRequired();
         }
     }
 }

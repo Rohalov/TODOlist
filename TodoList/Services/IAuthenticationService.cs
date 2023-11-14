@@ -4,7 +4,7 @@ namespace TodoList.Services
 {
     public interface IAuthenticationService
     {
-        Task<ApplicationUser> Login(ApplicationUser user);
+        Task<string> Login(ApplicationUser user);
         Task<ApplicationUser> Register(ApplicationUser user);
     }
 }

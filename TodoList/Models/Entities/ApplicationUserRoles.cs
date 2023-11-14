@@ -2,9 +2,8 @@
 
 namespace TodoList.Models.Entities
 {
-    public class ApplicationRole : IdentityRole
+    public class ApplicationUserRoles : IdentityUserRole<int>
     {
         public int Id { get; set; }
-        public string Name { get; set; }
     }
 }

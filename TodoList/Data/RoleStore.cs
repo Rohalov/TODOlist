@@ -2,7 +2,7 @@
 using TodoList.Models.Entities;
 
 namespace TodoList.Data
-{ 
+{
     public class RoleStore : IRoleStore<ApplicationRole>
     {
         private readonly RoleTable roleTable;

@@ -4,7 +4,7 @@ using TodoList.Models.Entities;
 
 namespace TodoList.Data
 {
-    public class UserTable : IDisposable
+    public class UserTable
     {
         private readonly ApplicationDbContext _context;
 
@@ -80,7 +80,7 @@ namespace TodoList.Data
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     "Role Not Found", roleName));
             }
-            var ur = new IdentityUserRole<int> { UserId = user.Id, RoleId = roleEntity.Id };
+            var ur = new ApplicationUserRoles { UserId = user.Id, RoleId = roleEntity.Id };
             _context.UserRoles.Add(ur);
             await _context.SaveChangesAsync();
         }

@@ -9,7 +9,6 @@ namespace TodoList.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
@@ -35,8 +34,9 @@ namespace TodoList.Controllers
             {
                 return BadRequest("User with that name already exists");
             }
-            return Created($"~api/users/{user.Id}", user);
+            return Created($"~api/users/{user.Id}", _mapper.Map<UserDTO>(user)); 
         }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -45,13 +45,13 @@ namespace TodoList.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Login(UserDTO request)
         {
-            var newUser = _mapper.Map<ApplicationUser>(request); 
-            var user = await _authenticationService.Login(newUser);
-            if(user == null)
+            var newUser = _mapper.Map<ApplicationUser>(request);
+            var jwtToken = await _authenticationService.Login(newUser);
+            if (jwtToken == null)
             {
                 return NotFound("User not found.");
             }
-            return Ok(_mapper.Map<UserDTO>(user));
+            return Ok(jwtToken);
         }
     }
 }

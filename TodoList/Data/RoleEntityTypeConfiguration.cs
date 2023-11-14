@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TodoList.Models.Entities;
 
 namespace TodoList.Data
@@ -23,12 +22,6 @@ namespace TodoList.Data
                 .HasMaxLength(50)
                 .IsRequired()
                 .IsUnicode();
-
-            builder
-                .HasMany<IdentityUserRole<int>>()
-                .WithOne()
-                .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
         }
     }
 }

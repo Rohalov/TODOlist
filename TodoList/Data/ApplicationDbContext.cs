@@ -1,5 +1,4 @@
 ﻿global using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using TodoList.Models.Entities;
 
 namespace TodoList.Data
@@ -12,7 +11,7 @@ namespace TodoList.Data
 
         public DbSet<ApplicationRole> Roles { get; set; }
 
-        public DbSet<IdentityUserRole<int>> UserRoles { get; set; }
+        public DbSet<ApplicationUserRoles> UserRoles { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) { }
 

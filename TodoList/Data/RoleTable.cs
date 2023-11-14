@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TodoList.Models.Entities;
 
 namespace TodoList.Data
 {
-    public class RoleTable : IDisposable
+    public class RoleTable 
     {
         private readonly ApplicationDbContext _context;
 
@@ -33,7 +34,7 @@ namespace TodoList.Data
 
         public async Task<ApplicationRole?> FindByIdAsync(string roleId)
         {
-            var role = await _context.Roles.FindAsync(roleId);
+            var role = await _context.Roles.FindAsync(int.Parse(roleId));
             return role;
         }
 
@@ -70,12 +71,12 @@ namespace TodoList.Data
 
         public async Task SetRoleNameAsync(ApplicationRole role, string roleName)
         {
-            var roleDB = await FindByNameAsync(role.NormalizedName);
+            var roleDB = await FindByIdAsync(role.Id.ToString());
             if (roleDB != null)
             {
                 roleDB.Name = roleName;
                 await _context.SaveChangesAsync();
-            }            
+            }           
         }
 
         public async Task<IdentityResult> UpdateAsync(ApplicationRole role)

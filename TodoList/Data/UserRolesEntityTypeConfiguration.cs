@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TodoList.Models.Entities;
 
 namespace TodoList.Data
 {
-    public class UserRolesEntityTypeConfiguration : IEntityTypeConfiguration<IdentityUserRole<int>>
+    public class UserRolesEntityTypeConfiguration : IEntityTypeConfiguration<ApplicationUserRoles>
     {
-        public void Configure(EntityTypeBuilder<IdentityUserRole<int>> builder)
+        public void Configure(EntityTypeBuilder<ApplicationUserRoles> builder)
         {
             builder
                 .ToTable("UserRoles");
 
             builder
-                .HasKey(x => x.UserId);
+                .HasKey(x => x.Id);
 
             builder
                 .Property(x => x.UserId)

@@ -10,6 +10,7 @@ namespace TodoList.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TodoItemsController : ControllerBase
     {
 
@@ -28,7 +29,7 @@ namespace TodoList.Controllers
         [Authorize(Policy = "RequireUserRole")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<TodoItem>>> GetAllTodoItems(int page)
-        {   
+        {
             var items = await _todoItemService.GetAllTodoItems(page);
             return Ok(_mapper.Map<List<TodoItemDto>>(items));
         }
@@ -46,7 +47,7 @@ namespace TodoList.Controllers
             }
 
             return Ok(_mapper.Map<TodoItemDto>(item));
-        } 
+        }
 
         [HttpPost]
         [Authorize(Policy = "RequireUserRole")]
