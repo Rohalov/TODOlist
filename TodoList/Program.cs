@@ -43,7 +43,12 @@ internal class Program
         builder.Services.AddTransient<UserTable>();
         builder.Services.AddTransient<RoleTable>();
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
             .AddJwtBearer(option =>
             {
                 option.TokenValidationParameters = new TokenValidationParameters
@@ -57,7 +62,7 @@ internal class Program
             });
 
 
-        builder.Services.AddAuthorization(options => 
+        builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("RequireUserRole",
                 policy => policy.RequireRole("User"));

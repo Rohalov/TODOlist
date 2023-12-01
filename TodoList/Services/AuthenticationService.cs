@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TodoList.Models.DTO;
 using TodoList.Models.Entities;
 
 namespace TodoList.Services
@@ -12,13 +14,16 @@ namespace TodoList.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager, IConfiguration configuration)
+            RoleManager<ApplicationRole> roleManager,
+            IConfiguration configuration, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<ApplicationUser> Register(ApplicationUser newUser)
@@ -38,10 +43,15 @@ namespace TodoList.Services
             return createdUser;
         }
 
-        public async Task<string> Login(ApplicationUser user)
+        public async Task<string> Login(UserDTO request)
         {
+            var user = _mapper.Map<ApplicationUser>(request);
             var userInDB = await _userManager.FindByNameAsync(user.UserName);
             if (userInDB == null)
+            {
+                return null;
+            }
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, userInDB.PasswordHash))
             {
                 return null;
             }
@@ -75,8 +85,8 @@ namespace TodoList.Services
 
             var claims = new List<Claim>
             {
-                new Claim("Id", user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
             };
 
             var userRoles = await _userManager.GetRolesAsync(user);

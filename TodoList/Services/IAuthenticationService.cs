@@ -1,10 +1,11 @@
-﻿using TodoList.Models.Entities;
+﻿using TodoList.Models.DTO;
+using TodoList.Models.Entities;
 
 namespace TodoList.Services
 {
     public interface IAuthenticationService
     {
-        Task<string> Login(ApplicationUser user);
+        Task<string> Login(UserDTO user);
         Task<ApplicationUser> Register(ApplicationUser user);
     }
 }

@@ -29,12 +29,14 @@ namespace TodoList.Controllers
         public async Task<ActionResult> Register(UserDTO request)
         {
             var newUser = _mapper.Map<ApplicationUser>(request);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            newUser.PasswordHash = passwordHash;
             var user = await _authenticationService.Register(newUser);
             if (user == null)
             {
                 return BadRequest("User with that name already exists");
             }
-            return Created($"~api/users/{user.Id}", _mapper.Map<UserDTO>(user)); 
+            return Created($"~api/users/{user.Id}", $"User {user.UserName} successfully created"); 
         }
 
 
@@ -45,8 +47,7 @@ namespace TodoList.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Login(UserDTO request)
         {
-            var newUser = _mapper.Map<ApplicationUser>(request);
-            var jwtToken = await _authenticationService.Login(newUser);
+            var jwtToken = await _authenticationService.Login(request);
             if (jwtToken == null)
             {
                 return NotFound("User not found.");
